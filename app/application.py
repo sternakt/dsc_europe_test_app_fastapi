@@ -15,9 +15,13 @@ class Name(BaseModel):
 def broker():
     return router.broker
 
+to_names = router.broker.publisher(
+    "names",
+    description="Produces a message on names after receiving a post on name endpoint",
+)
 
 @router.get("/")
-async def hello_http(broker: Annotated[KafkaBroker, Depends(broker)]):
+async def hello_http():
     return "Hello from HTTP"
 
 @router.post("/name/")
