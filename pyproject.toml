@@ -30,6 +30,7 @@ static-analysis = [
 testing = [
     "pytest==7.4.2",
     "pytest-asyncio==0.21.1",
+    "httpx",
 ]
 
 dev = ["my-service[lint,static-analysis,testing]"]
