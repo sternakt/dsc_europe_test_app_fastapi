@@ -9,6 +9,7 @@ name = "my-service"
 
 dependencies = [
     "faststream[kafka, docs]>=0.1.5",
+    "fastapi"
 ]
 
 [project.optional-dependencies]

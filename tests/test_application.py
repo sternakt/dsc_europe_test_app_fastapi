@@ -1,17 +1,22 @@
 import pytest
 from faststream.kafka import TestKafkaBroker
+from fastapi.testclient import TestClient
 
-from app.application import Greeting, Name, broker, on_names
+from app.application import Name, router, app
 
+client = TestClient(app)
 
-@broker.subscriber("greetings")
-async def on_greetings(msg: Greeting) -> None:
+@router.broker.subscriber("names")
+async def on_names(msg: Name) -> None:
     pass
 
 
 @pytest.mark.asyncio
 async def test_on_names():
-    async with TestKafkaBroker(broker):
-        await broker.publish(Name(name="John"), "names")
-        on_names.mock.assert_called_with(dict(Name(name="John")))
-        on_greetings.mock.assert_called_with(dict(Greeting(greeting="hello John")))
+    async with TestKafkaBroker(router.broker):
+        response = client.post(
+            "/name/",
+            json={"name": "Tvrtko"},
+        )
+        assert response.status_code == 200
+        on_names.mock.assert_called_with(dict(Name(name="Tvrtko")))
